@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -17,14 +18,14 @@ async Task Main()
     try
     {
         var stream = client.GetStream();
-
-        var message = new Message
-        {
-            MessageSize = 4,
-            Header = new HeaderV0 { CorrelationId = 7 }
-        };
+        var message = await stream.ReadMessageAsync<Message<HeaderV2>>(1024);
+        Console.WriteLine(message.Header.CorrelationId);
+        byte[] correlationIdBytes = new byte[4];
+        BinaryPrimitives.WriteInt32BigEndian(correlationIdBytes, message.Header.CorrelationId);
         
-        await stream.WriteMessageAsync(message);
+
+        await stream.WriteAsync(correlationIdBytes, 0, correlationIdBytes.Length);
+        await stream.WriteAsync(correlationIdBytes, 0, correlationIdBytes.Length);
         await stream.FlushAsync();
     }
     finally

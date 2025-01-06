@@ -1,12 +1,13 @@
+using System.Buffers.Binary;
 using codecraftersKafka.Models.Headers;
 
 namespace codecraftersKafka.Models;
 
-public class Message: IMessage
+public class Message<HeaderT>: IMessage where HeaderT : IHeader, new()
 {
     public int MessageSize { get; set; }
 
-    public IHeader Header { get; set; }
+    public HeaderT Header { get; set; }
 
 
     public byte[] ToByteArray()
@@ -21,8 +22,13 @@ public class Message: IMessage
         return messageSizeBytes.Concat(headerBytes).ToArray();
     }
 
-    public void FromByteArray(byte[] data)
+    public IMessage FromByteArray(byte[] data)
     {
-        throw new NotImplementedException();
+
+        MessageSize = BinaryPrimitives.ReadInt32BigEndian(data[..4]);
+        Header = new HeaderT();
+        Header.FromByteArray(data[4..]);
+
+        return this;
     }
 }

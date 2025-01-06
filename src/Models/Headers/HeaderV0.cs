@@ -19,7 +19,7 @@ public class HeaderV0 : IHeader
         return correlationIdBytes;
     }
 
-    public void FromByteArray(byte[] data)
+    public IHeader FromByteArray(byte[] data)
     {
         throw new NotImplementedException();
     }

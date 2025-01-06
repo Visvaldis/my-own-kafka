@@ -11,10 +11,10 @@ public static class NetworkStreamExtensions
         await stream.WriteAsync(data, 0, data.Length);
     }
 
-    public static T ReadMessage<T>(this NetworkStream stream, int size) where T : IMessage, new()
+    public static async Task<T> ReadMessageAsync<T>(this NetworkStream stream, int size) where T : IMessage, new()
     {
         var buffer = new byte[size];
-        stream.Read(buffer, 0, size);
+        await stream.ReadAsync(buffer, 0, size);
         var message = new T();
         message.FromByteArray(buffer);
         return message;
