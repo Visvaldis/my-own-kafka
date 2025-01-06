@@ -8,4 +8,4 @@
 
 set -e # Exit on failure
 
-dotnet build --configuration Release --output /tmp/codecrafters-build-csharp codecrafters-kafka.csproj
+dotnet build --configuration Release --output /tmp/codecrafters-build-csharp codecraftersKafka.csproj
